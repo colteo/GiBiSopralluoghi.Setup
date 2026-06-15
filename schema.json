@@ -1,0 +1,66 @@
+{
+  "tables": [
+    {
+      "name": "Sito",
+      "display": "Sito",
+      "plural": "Siti",
+      "primary": { "display": "Nome sito", "required": true },
+      "columns": [
+        { "type": "text",    "name": "Indirizzo",            "display": "Indirizzo",            "maxLength": 200 },
+        { "type": "text",    "name": "Comune",               "display": "Comune",               "maxLength": 100 },
+        { "type": "text",    "name": "CAP",                  "display": "CAP",                  "maxLength": 10 },
+        { "type": "text",    "name": "ProprietarioImmobile", "display": "Proprietario immobile", "maxLength": 200, "description": "Solo se diverso dal cliente" },
+        { "type": "decimal", "name": "Latitudine",           "display": "Latitudine",  "precision": 6, "min": -90,  "max": 90 },
+        { "type": "decimal", "name": "Longitudine",          "display": "Longitudine", "precision": 6, "min": -180, "max": 180 },
+        { "type": "text",    "name": "Distributore",         "display": "Distributore",         "maxLength": 100 },
+        { "type": "text",    "name": "POD",                  "display": "POD",                  "maxLength": 20 }
+      ]
+    },
+    {
+      "name": "Sopralluogo",
+      "display": "Sopralluogo",
+      "plural": "Sopralluoghi",
+      "primary": { "display": "Codice pratica", "required": false, "autoNumber": "SOP-{DATETIMEUTC:yyyy}-{SEQNUM:4}" },
+      "columns": [
+        { "type": "date",        "name": "DataSopralluogo",   "display": "Data sopralluogo" },
+        { "type": "choice",      "name": "TipologiaUtenza",   "display": "Tipologia utenza", "options": ["Residenziale", "Condominio", "Azienda", "Altro"] },
+        { "type": "multichoice", "name": "Finalita",          "display": "Finalità", "options": ["Autoconsumo", "Accumulo", "Ricarica EV", "Altro"] },
+        { "type": "int",         "name": "ConsumoAnnuo",      "display": "Consumo annuo", "min": 0, "max": 10000000, "description": "kWh/anno" },
+        { "type": "choice",      "name": "ProfiloConsumi",    "display": "Profilo consumi", "options": ["Diurno", "Serale", "Misto"] },
+        { "type": "choice",      "name": "TipoInstallazione", "display": "Tipo installazione", "options": ["Tetto inclinato", "Tetto piano", "Pensilina", "A terra"] },
+        { "type": "choice",      "name": "Copertura",         "display": "Copertura", "options": ["Tegole", "Lamiera", "Guaina", "Fibrocemento", "Altro"] },
+        { "type": "choice",      "name": "StatoCopertura",    "display": "Stato copertura", "options": ["Buono", "Da verificare", "Critico"] },
+        { "type": "decimal",     "name": "SuperficieUtile",   "display": "Superficie utile", "precision": 2, "min": 0, "max": 10000, "description": "m²" },
+        { "type": "int",         "name": "NumeroFalde",       "display": "Numero falde", "min": 1, "max": 20 },
+        { "type": "int",         "name": "Azimut",            "display": "Azimut", "min": -180, "max": 180, "description": "Gradi. 0 = Sud, -90 = Est, +90 = Ovest (convenzione PVGIS)" },
+        { "type": "int",         "name": "Pendenza",          "display": "Pendenza", "min": 0, "max": 90, "description": "Gradi" },
+        { "type": "multichoice", "name": "Ombreggiamenti",    "display": "Ombreggiamenti", "options": ["Assenti", "Alberi", "Comignoli", "Edifici", "Altro"] },
+        { "type": "choice",      "name": "Fornitura",         "display": "Fornitura", "options": ["Monofase", "Trifase"] },
+        { "type": "decimal",     "name": "PotenzaImpegnata",  "display": "Potenza impegnata", "precision": 2, "min": 0, "max": 1000, "description": "kW" },
+        { "type": "decimal",     "name": "PotenzaFV",         "display": "Potenza FV ipotizzata", "precision": 2, "min": 0, "max": 1000, "description": "kWp" },
+        { "type": "choice",      "name": "Accumulo",          "display": "Accumulo", "options": ["No", "Da valutare", "Sì"] },
+        { "type": "decimal",     "name": "ProduzioneAttesa",  "display": "Produzione attesa", "precision": 0, "min": 0, "max": 10000000, "description": "kWh/anno, stimata con PVGIS" },
+        { "type": "multichoice", "name": "Criticita",         "display": "Criticità", "options": ["Portanza e fissaggi", "Stato copertura / amianto", "Vincoli e autorizzazioni", "Sicurezza lavori in quota", "Adeguamento quadro / terra", "Connessione distributore", "Altro"] },
+        { "type": "choice",      "name": "Esito",             "display": "Esito", "options": ["Fattibilità positiva", "Condizionata a verifiche", "Non valutabile"] },
+        { "type": "memo",        "name": "MotivazioneEsito",  "display": "Motivazione esito" },
+        { "type": "memo",        "name": "ProssimeAzioni",    "display": "Prossime azioni" },
+        { "type": "memo",        "name": "Note",              "display": "Note del cliente" },
+        { "type": "image",       "name": "FirmaCliente",      "display": "Firma cliente" }
+      ]
+    },
+    {
+      "name": "Foto",
+      "display": "Foto",
+      "plural": "Foto",
+      "primary": { "display": "Titolo", "required": true },
+      "columns": [
+        { "type": "image", "name": "Immagine", "display": "Immagine", "primaryImage": true }
+      ]
+    }
+  ],
+  "relationships": [
+    { "name": "Contact_Sito",       "one": "contact",     "many": "Sito",        "lookup": "Cliente",     "lookupDisplay": "Cliente",     "label": "Siti",         "behavior": "removeLink" },
+    { "name": "Sito_Sopralluogo",   "one": "Sito",        "many": "Sopralluogo", "lookup": "Sito",        "lookupDisplay": "Sito",        "label": "Sopralluoghi", "behavior": "restrict" },
+    { "name": "Sopralluogo_Foto",   "one": "Sopralluogo", "many": "Foto",        "lookup": "Sopralluogo", "lookupDisplay": "Sopralluogo", "label": "Foto",         "behavior": "parental" }
+  ]
+}
